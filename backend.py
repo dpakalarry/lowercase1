@@ -1,20 +1,6 @@
- # get this from Android App
- # deposit, withdraws that check if there is enough balance
  # Name to cross-reference w/ database and ensure security
- # vars: name, balance
- # methods: deposit, withdraw
 import pyrebase
 import random
-
-def genUsers():
-    finDict = dict()
-    for i in range(0,10):
-        uid = random.randint(100000,1000000-1)
-        finDict[uid] = dict()
-        finDict[uid]["Balance"] = random.randint(10,10000)
-        finDict[uid]["Name"] = "Person {}".format(i)
-    return finDict
-
 
 config = {
   "apiKey": "AIzaSyCs_6BTTUoPm1zZJeB5-M6PoWozSbdATnA",
