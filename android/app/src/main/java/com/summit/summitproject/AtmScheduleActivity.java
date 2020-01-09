@@ -5,8 +5,13 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -27,6 +32,7 @@ import org.json.JSONObject;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 import java.util.TimeZone;
 
 public class AtmScheduleActivity extends AppCompatActivity {
@@ -50,6 +56,11 @@ public class AtmScheduleActivity extends AppCompatActivity {
         generate_QRCode=findViewById(R.id.generate_qr);
         qrCode=findViewById(R.id.imageView);
 
+        Spinner spinner = findViewById(R.id.accountSelect);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.accounts_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
         generate_QRCode.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -66,7 +77,6 @@ public class AtmScheduleActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         String account = dataSnapshot.getValue().toString().substring(9, 17);
-                        Log.d("msg2", account);
 
                         FirebaseDatabase database = FirebaseDatabase.getInstance();
                         DatabaseReference bankAccounts= database.getReference("Bank Accounts");
@@ -74,11 +84,28 @@ public class AtmScheduleActivity extends AppCompatActivity {
 
                         JSONObject json = new JSONObject();
 
+                        // Get amount user entered
+                        EditText amount = findViewById(R.id.atm_amount);
+                        String numAmount = amount.getText().toString();
+
+                        // Determine withdraw or deposit
+                        RadioGroup radioGroup = findViewById(R.id.depositOrWithdraw);
+                        int selectedId = radioGroup.getCheckedRadioButtonId();
+                        // find selected button by returned id
+                        RadioButton radioButton = findViewById(selectedId);
+                        String depositOrWithdraw = (String)radioButton.getText();
+                        String dOrW = depositOrWithdraw == "Deposit" ? "d" : "w";
+
+                        // Generate random 8-digit transaction ID
+                        Random gen = new Random();
+                        int randVal = gen.nextInt(100000000);
+                        String transactionID = Integer.toString(randVal);
+
                         try {
                             json.put("acct", account);
-                            json.put("transId", "xxxx5678");
-                            json.put("amnt", "10.00");
-                            json.put("type", "d");
+                            json.put("transId", transactionID);
+                            json.put("amnt", numAmount);
+                            json.put("type", dOrW);
 
                             TimeZone tz = TimeZone.getTimeZone("UTC");
                             DateFormat date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
