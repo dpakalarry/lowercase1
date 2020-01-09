@@ -24,6 +24,7 @@ import org.json.JSONObject;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 import java.util.TimeZone;
 
 public class AtmScheduleActivity extends AppCompatActivity {
@@ -42,8 +43,6 @@ public class AtmScheduleActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 JSONObject json = new JSONObject();
-                JSONObject user = new JSONObject();
-                JSONObject transaction = new JSONObject();
 
                 // Get amount user entered
                 EditText amount = findViewById(R.id.atm_amount);
@@ -55,28 +54,30 @@ public class AtmScheduleActivity extends AppCompatActivity {
                 // find selected button by returned id
                 RadioButton radioButton = findViewById(selectedId);
                 String depositOrWithdraw = (String)radioButton.getText();
+                String dOrW = depositOrWithdraw == "Deposit" ? "d" : "w";
 
-                Log.d("Amount:", numAmount);
-                Log.d("Type:", depositOrWithdraw);
+                // Generate random 8-digit transaction ID
+                Random gen = new Random();
+                int randVal = gen.nextInt(100000000);
+                String transactionID = Integer.toString(randVal);
+
+                // Debugging
+                Log.d("Input, Amount:", numAmount);
+                Log.d("Input, Type:", dOrW);
+                Log.d("Input, TransID:", transactionID);
 
                 try {
-                    user.put("account", "xxxxxxxxxxxx1234");
+                    json.put("transactionId", transactionID);
+                    json.put("amount", numAmount);
 
-                    transaction.put("transactionId", "xxxxxxxxxxxx5678");
-                    transaction.put("amount", numAmount);
-
-                    transaction.put("type", depositOrWithdraw);
+                    json.put("type", dOrW);
 
                     TimeZone tz = TimeZone.getTimeZone("UTC");
                     DateFormat date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
                     date.setTimeZone(tz);
                     String nowAsISO = date.format(new Date());
 
-                    transaction.put("timestamp", nowAsISO);
-
-                    json.put("user", user.toString());
-                    json.put("transaction", transaction.toString());
-
+                    json.put("timestamp", nowAsISO);
 
                     String text=json.toString();
                     MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
