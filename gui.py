@@ -53,12 +53,17 @@ class confirmPage(Frame):
 
 #TODO: Paste in qr code and test
 m = Tk() 
-conf = confirmPage( "NAME", "TYPE", 102012, 12345678) 
-   #name: str
-   #type: str
-   #amount: int
-   #account: int
-	#)
-conf.genPage(m)
+valid = True
+if valid:
+	conf = confirmPage( "NAME", "TYPE", 102012, 12345678) 
+	   #name: str
+	   #type: str
+	   #amount: int
+	   #account: int
+		#)
+
+	conf.genPage(m)
+else:
+	messagebox.showinfo("ERROR", "ERROR: {}".format("INSERT ERROR VAR HERE AS A STRING"))
 m.mainloop() 
 
