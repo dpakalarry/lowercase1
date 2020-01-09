@@ -64,6 +64,6 @@ if valid:
 
 	conf.genPage(m)
 else:
-	messagebox.showinfo("ERROR", "ERROR: {}".format("INSERT ERROR VAR HERE AS A STRING"))
+	messagebox.showerror("ERROR", "ERROR: {}".format("INSERT ERROR VAR HERE AS A STRING"))
 m.mainloop() 
 
