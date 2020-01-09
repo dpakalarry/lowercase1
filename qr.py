@@ -25,16 +25,29 @@ def streamStart(pi=False):
     return vs
 
 def readQr(stream):
-    frame = stream.read()
-    barcodes = pyzbar.decode(frame)
-    if len(barcodes) > 0:
-        barcode = barcodes.pop()
-        barcodeData = barcode.data.decode("utf-8")
-        barcodeType = barcode.type
-        text = "{} ({})".format(barcodeData, barcodeType)
-        print(text)
-        return convertFromJson(barcodeData)
-    return None
+    while True:
+        frame = stream.read()
+        frame = imutils.resize(frame, width=800)
+        barcodes = pyzbar.decode(frame)
+        cv2.imshow("Barcode Scanner", frame)
+        key = cv2.waitKey(1) & 0xFF
+        # if the `q` key was pressed, break from the loop
+        if key == ord("q"):
+            break
+        if len(barcodes) > 0:
+            barcode = barcodes.pop()
+            barcodeData = barcode.data.decode("utf-8")
+            barcodeType = barcode.type
+            text = "{} ({})".format(barcodeData, barcodeType)
+            print(text)
+            codeDict = convertFromJson(barcodeData)
+            if codeDict != None:
+                cv2.destroyAllWindows()
+                quitStream(stream)
+                return codeDict
+    cv2.destroyAllWindows()
+    quitStream(stream)
+
 
 def quitStream(stream):
     stream.stop()

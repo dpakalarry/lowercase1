@@ -2,14 +2,20 @@ import qr
 import gui
 
 vs = qr.streamStart()
-qrFound = False
-while not qrFound:
-    data = qr.readQr(vs)
-    if data != None:
-        qrFound = True
-qr.quitStream(vs)
+(data, valid) = qr.readQr(vs)
 user = data["user"]
 transaction = data["transaction"]
-page = gui.confirmPage(user["name"], transaction["type"], transaction["amount"], user["account"])
+
 m = gui.Tk()
-page.genPage(m)
+if valid:
+	page = gui.confirmPage(user["name"], transaction["type"], transaction["amount"], user["account"])
+	   #name: str
+	   #type: str
+	   #amount: int
+	   #account: int
+		#)
+	page.genPage(m)
+else:
+	messagebox.showerror("ERROR", "ERROR: {}".format("INSERT ERROR VAR HERE AS A STRING"))
+m.mainloop() 
+
