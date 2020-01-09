@@ -12,10 +12,11 @@ while codeDict == None:
 qr.quitStream(stream)
 qr.cv2.destroyAllWindows()
 if codeDict:
-    page = gui.confirmPage(codeDict["name"], codeDict["type"], codeDict["amount"], codeDict["account"])
     m = gui.Tk()
+    page = gui.confirmPage("Bob", codeDict["type"], codeDict["amount"], codeDict["account"])
     page.genPage(m)
     m.mainloop()
+    
 else:
 	messagebox.showerror("ERROR", "ERROR: {}".format("Exited"))
 

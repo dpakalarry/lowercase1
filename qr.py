@@ -11,7 +11,7 @@ def convertFromJson(data):
         dataDict = json.loads(data)
     except ValueError as e:
         return None
-    elements = ["amount", "transactionId", "type", "timestamp"]
+    elements = ["amount", "transactionId", "type", "timestamp", "account"]
     if all(elem in dataDict for elem in elements):
         return dataDict
     return None
