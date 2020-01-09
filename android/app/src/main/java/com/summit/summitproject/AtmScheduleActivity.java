@@ -2,9 +2,13 @@ package com.summit.summitproject;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -41,14 +45,27 @@ public class AtmScheduleActivity extends AppCompatActivity {
                 JSONObject user = new JSONObject();
                 JSONObject transaction = new JSONObject();
 
+                // Get amount user entered
+                EditText amount = findViewById(R.id.atm_amount);
+                String numAmount = amount.getText().toString();
+
+                // Determine withdraw or deposit
+                RadioGroup radioGroup = findViewById(R.id.depositOrWithdraw);
+                int selectedId = radioGroup.getCheckedRadioButtonId();
+                // find selected button by returned id
+                RadioButton radioButton = findViewById(selectedId);
+                String depositOrWithdraw = (String)radioButton.getText();
+
+                Log.d("Amount:", numAmount);
+                Log.d("Type:", depositOrWithdraw);
+
                 try {
                     user.put("account", "xxxxxxxxxxxx1234");
-                    user.put("balance", "20.00");
-                    user.put("name", "Rich Fairbanks");
 
                     transaction.put("transactionId", "xxxxxxxxxxxx5678");
-                    transaction.put("amount", "10.00");
-                    transaction.put("type", "Deposit");
+                    transaction.put("amount", numAmount);
+
+                    transaction.put("type", depositOrWithdraw);
 
                     TimeZone tz = TimeZone.getTimeZone("UTC");
                     DateFormat date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
@@ -64,7 +81,7 @@ public class AtmScheduleActivity extends AppCompatActivity {
                     String text=json.toString();
                     MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
                     try {
-                        BitMatrix bitMatrix = multiFormatWriter.encode(text, BarcodeFormat.QR_CODE,500,500);
+                        BitMatrix bitMatrix = multiFormatWriter.encode(text, BarcodeFormat.QR_CODE,1000,1000);
                         BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
                         Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
                         qrCode.setImageBitmap(bitmap);
