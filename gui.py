@@ -1,15 +1,16 @@
 from tkinter import *
 
 
-class confirmPage:
+class confirmPage(Frame):
 
-	def init(self, n="", t = "", am = 0, ac = 0):
+	def __init__(self, n="", t = "", am = 0, ac = 0):
+		super(confirmPage, self).__init__()
 		self.name = n
 		self.type = t
 		self.amount = am
 		self.account = ac
 
-	def genPage(m):
+	def genPage(self, m):
 		can = Canvas(m, width=700, height=600)
 		can.pack()
 		m.title('Confirm Transaction') 
@@ -42,7 +43,7 @@ class confirmPage:
 		typeFrame = Frame(can, width = 700, height = 50)
 		lblType = Label(typeFrame, width = 20, height = 2, text = "Account: ", font = ("Calibra", 20))
 		lblType.place(x = 0, y = 0)
-		lblTypeVal = Label(typeFrame, width = 20, height = 2, text = " XXXXXX{}".format(self.account%10000), font = ("Calibra", 20))
+		lblTypeVal = Label(typeFrame, width = 20, height = 2, text = " XXXX{}".format(self.account%10000), font = ("Calibra", 20))
 		lblTypeVal.place(x = 300, y = 0)
 		typeFrame.place(x = 0, y = 400)
 
@@ -52,11 +53,12 @@ class confirmPage:
 
 #TODO: Paste in qr code and test
 m = Tk() 
-conf = confirmPage(
+conf = confirmPage( "NAME", "TYPE", 102012, 12345678) 
    #name: str
    #type: str
    #amount: int
    #account: int
-	)
+	#)
+conf.genPage(m)
 m.mainloop() 
 
