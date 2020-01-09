@@ -4,7 +4,7 @@ import qr
 
 class confirmPage(Frame):
 
-	def __init__(self, n="", t = "", am = 0, ac = 0):
+	def __init__(self, n="", t = "", am = 0, ac = ""):
 		super(confirmPage, self).__init__()
 		self.name = n
 		self.type = t
@@ -44,7 +44,7 @@ class confirmPage(Frame):
 		typeFrame = Frame(can, width = 700, height = 50)
 		lblType = Label(typeFrame, width = 20, height = 2, text = "Account: ", font = ("Calibra", 20))
 		lblType.place(x = 0, y = 0)
-		lblTypeVal = Label(typeFrame, width = 20, height = 2, text = " XXXX{}".format(self.account%10000), font = ("Calibra", 20))
+		lblTypeVal = Label(typeFrame, width = 20, height = 2, text = " XXXX{}".format(self.account[len(self.account)-4:]), font = ("Calibra", 20))
 		lblTypeVal.place(x = 300, y = 0)
 		typeFrame.place(x = 0, y = 400)
 
@@ -52,19 +52,5 @@ class confirmPage(Frame):
 
 
 
-#TODO: Paste in qr code and test
-m = Tk() 
-valid = True
-if valid:
-	conf = confirmPage( "NAME", "TYPE", 102012, 12345678) 
-	   #name: str
-	   #type: str
-	   #amount: int
-	   #account: int
-		#)
 
-	conf.genPage(m)
-else:
-	messagebox.showerror("ERROR", "ERROR: {}".format("INSERT ERROR VAR HERE AS A STRING"))
-m.mainloop() 
 

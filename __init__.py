@@ -1,21 +1,21 @@
 import qr
 import gui
+import json
 
-vs = qr.streamStart()
-(data, valid) = qr.readQr(vs)
-user = data["user"]
-transaction = data["transaction"]
-
-m = gui.Tk()
-if valid:
-	page = gui.confirmPage(user["name"], transaction["type"], transaction["amount"], user["account"])
-	   #name: str
-	   #type: str
-	   #amount: int
-	   #account: int
-		#)
-	page.genPage(m)
+stream = qr.streamStart()
+codeDict = None
+while codeDict == None:
+    codeDict = qr.readQr(stream)
+    if codeDict != None:
+        print("returning", codeDict)
+        break
+qr.quitStream(stream)
+qr.cv2.destroyAllWindows()
+if codeDict:
+    page = gui.confirmPage(codeDict["name"], codeDict["type"], codeDict["amount"], codeDict["account"])
+    m = gui.Tk()
+    page.genPage(m)
+    m.mainloop()
 else:
-	messagebox.showerror("ERROR", "ERROR: {}".format("INSERT ERROR VAR HERE AS A STRING"))
-m.mainloop() 
+	messagebox.showerror("ERROR", "ERROR: {}".format("Exited"))
 
