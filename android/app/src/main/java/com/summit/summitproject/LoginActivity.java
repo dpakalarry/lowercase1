@@ -3,7 +3,6 @@ package com.summit.summitproject;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -15,11 +14,10 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.summit.summitproject.prebuilt.login.LoginListener;
 import com.summit.summitproject.prebuilt.login.LoginManager;
-import com.summit.summitproject.prebuilt.model.Transaction;
-
-import java.util.ArrayList;
 
 /**
  * The first screen of our app. Takes in a username and password and interacts with the
@@ -158,7 +156,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private LoginListener loginListener = new LoginListener() {
         @Override
-        public void onLoginSuccess(String name, String cardNum, ArrayList<Transaction> transactions) {
+        public void onLoginSuccess(String name, String cardNum) {
             // Allow user input (e.g. if the user returns to this screen) and
             // hide the progress bar again
             setAllEnabled(true);
@@ -174,7 +172,6 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent(LoginActivity.this, SummaryActivity.class);
             intent.putExtra(SummaryActivity.KEY_NAME, name);
             intent.putExtra(SummaryActivity.KEY_CARD_NUM, cardNum);
-            intent.putExtra(SummaryActivity.KEY_TRANSACTIONS, transactions);
             startActivity(intent);
 
         }

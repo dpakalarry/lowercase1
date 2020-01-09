@@ -2,21 +2,14 @@ package com.summit.summitproject.prebuilt.login;
 
 import android.os.AsyncTask;
 
-import com.summit.summitproject.prebuilt.model.Transaction;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
-
-import static android.os.SystemClock.sleep;
 
 /**
  * Handles making a single network call to a fake login API to retrieve user details (their
@@ -121,21 +114,8 @@ public class LoginManager extends AsyncTask<Void, Void, String> {
             String name = rootObject.getString("name");
             String cardNum = rootObject.getString("cardLastFour");
 
-            // Get the JSON array of transactions
-            JSONArray transactionsObject = rootObject.getJSONArray("transactions");
-
-            ArrayList<Transaction> transactions = new ArrayList<>();
-
-            // For each JSON object in the array, parse out and add a new Transaction
-            for (int i = 0; i < transactionsObject.length(); i++) {
-                JSONObject currentTransaction = transactionsObject.getJSONObject(i);
-                String merchant = currentTransaction.getString("merchant");
-                String amount = currentTransaction.getString("amount");
-                transactions.add(new Transaction(merchant, amount));
-            }
-
             // Invoke the success listener with the user data that was parsed out
-            listener.onLoginSuccess(name, cardNum, transactions);
+            listener.onLoginSuccess(name, cardNum);
         } catch (JSONException e) {
             // If there was a problem parsing the JSON, then invoke the error listener
             listener.onLoginError(new Exception("Failed to parse response from server."));
