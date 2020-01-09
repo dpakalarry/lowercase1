@@ -1,14 +1,18 @@
 <resources>
     <string name="app_name">Summit Project</string>
-    <string name="welcome">Welcome to Summit!</string>
+    <string name="welcome">Welcome!</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="sign_in">Sign In</string>
     <string name="remember_me">Remember Me</string>
     <string name="summary_title">Hello, %1$s</string>
-    <string name="summary_subtitle">Your recent transactions for Card x%1$s:</string>
-    <string name="transaction_selected">You clicked %1$s!</string>
+    <string name="summary_subtitle">Use the options below to schedule transactions and view any pending visits:</string>
 
     <string name="atm_schedule_button">Schedule ATM Visit</string>
     <string name="submit">Submit</string>
+    <string name="confirm_atm_schedule">Confirm and Generate</string>
+    <string name="welcome_atm_schedule">Set up your ATM transaction below.</string>
+
+    <string name="deposit">Deposit</string>
+    <string name="withdrawal">Withdraw</string>
 </resources>
