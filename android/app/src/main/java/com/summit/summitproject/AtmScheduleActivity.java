@@ -14,6 +14,14 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
 public class AtmScheduleActivity extends AppCompatActivity {
     Button generate_QRCode;
     ImageView qrCode;
@@ -29,16 +37,43 @@ public class AtmScheduleActivity extends AppCompatActivity {
         generate_QRCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                JSONObject json = new JSONObject();
+                JSONObject json = new JSONObject();
+                JSONObject user = new JSONObject();
+                JSONObject transaction = new JSONObject();
 
-                String text="test";
-                MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
                 try {
-                    BitMatrix bitMatrix = multiFormatWriter.encode(text, BarcodeFormat.QR_CODE,200,200);
-                    BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
-                    Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
-                    qrCode.setImageBitmap(bitmap);
-                } catch (WriterException e) {
+                    user.put("account", "xxxxxxxxxxxx1234");
+                    user.put("balance", "20.00");
+                    user.put("name", "Rich Fairbanks");
+
+                    transaction.put("transactionId", "xxxxxxxxxxxx5678");
+                    transaction.put("amount", "10.00");
+                    transaction.put("type", "Deposit");
+
+                    TimeZone tz = TimeZone.getTimeZone("UTC");
+                    DateFormat date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
+                    date.setTimeZone(tz);
+                    String nowAsISO = date.format(new Date());
+
+                    transaction.put("timestamp", nowAsISO);
+
+                    json.put("user", user.toString());
+                    json.put("transaction", transaction.toString());
+
+
+                    String text=json.toString();
+                    MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
+                    try {
+                        BitMatrix bitMatrix = multiFormatWriter.encode(text, BarcodeFormat.QR_CODE,500,500);
+                        BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+                        Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
+                        qrCode.setImageBitmap(bitmap);
+
+                    } catch (WriterException e) {
+                        e.printStackTrace();
+                    }
+
+                } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
