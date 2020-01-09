@@ -8,4 +8,7 @@
     <string name="summary_title">Hello, %1$s</string>
     <string name="summary_subtitle">Your recent transactions for Card x%1$s:</string>
     <string name="transaction_selected">You clicked %1$s!</string>
+
+    <string name="atm_schedule_button">Schedule ATM Visit</string>
+    <string name="submit">Submit</string>
 </resources>
