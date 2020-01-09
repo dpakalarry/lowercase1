@@ -4,11 +4,13 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -38,6 +40,11 @@ public class AtmScheduleActivity extends AppCompatActivity {
 
         generate_QRCode=findViewById(R.id.generate_qr);
         qrCode=findViewById(R.id.imageView);
+
+        Spinner spinner = findViewById(R.id.accountSelect);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.accounts_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
 
         generate_QRCode.setOnClickListener(new View.OnClickListener() {
             @Override

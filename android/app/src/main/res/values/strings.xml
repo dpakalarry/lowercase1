@@ -15,4 +15,9 @@
 
     <string name="deposit">Deposit</string>
     <string name="withdrawal">Withdraw</string>
+
+    <string-array name="accounts_array">
+        <item>Debit (...3345)</item>
+        <item>Credit (...1002)</item>
+    </string-array>
 </resources>
