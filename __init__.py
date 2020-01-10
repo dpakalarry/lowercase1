@@ -1,9 +1,8 @@
 import qr
-import gui
+#import gui
 import json
 import backend
 import webbrowser
-from tkinter import messagebox
 import os 
 import time
 
@@ -15,11 +14,12 @@ while True:
         try:
             transaction = backend.Transaction(codeDict["acct"], codeDict["amt"], codeDict["type"], codeDict["transId"])
         except:
-            messagebox.showerror("ERROR", "ERROR: PLEASE TRY AGAIN")
+            import ctypes    
+            ctypes.windll.user32.MessageBoxW(0, "Error: Invalid Code", "Error", 1)
             codeDict = None
             time.sleep(1)
             continue
-        site = open('confirm.html', 'r+')
+        site = open('template.html', 'r')
         html = "".join(site.readlines())
         orig = html
         html = html.replace('NameValue', transaction.correctName)
@@ -27,10 +27,14 @@ while True:
         html = html.replace('AccountValue',codeDict["acct"])
         html = html.replace('AmountValue', codeDict["amt"])
         html = html.replace('TransValue', codeDict["transId"])
-        print(html)
-        site.truncate(0)
-        site.write(html)
+
         site.close()
+
+        nSite = open('confirm.html','w+')
+        nSite.truncate(0)
+        nSite.write(html)
+        nSite.close()
+
 
         filepath = 'file://' + os.path.realpath('confirm.html')
         print(filepath)
@@ -45,16 +49,5 @@ while True:
 
 
             
-            
-#qr.quitStream(stream)
-#qr.cv2.destroyAllWindows()
-#if codeDict:
-    
-#    m = gui.Tk()
-#    page = gui.confirmPage(transaction.correctName, codeDict["type"], codeDict["amount"], codeDict["account"])
-#    page.genPage(m, transaction.execute)
-#    m.mainloop()
-#else:
-    
-#    messagebox.showerror("ERROR", "ERROR: {}".format("Exited"))
+         
 

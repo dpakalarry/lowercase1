@@ -23,14 +23,15 @@ class Transaction:
         self.transId = transID
         
         print("Initial balance:",self.balance)
-        verify()
+        self.verify()
     def verify(self):
         if self.id in db.child("Bank Accounts").get().val():
             if self.transId in db.child("Transactions").get().val():
                 if self.id == db.child("Transactions").child(self.transId).child("account").get().val():
                     if self.amt == db.child("Transactions").child(self.transId).child("amt").get().val():
-                        if self.action == db.child("Transactions").child(self.transId).child("type").get().val:
+                        if self.action == db.child("Transactions").child(self.transId).child("type").get().val():
                             return
+                        print(db.child("Transactions").child(self.transId).child("type").get().val())
         raise ValueError("")
             #return "Invalid ID"
         

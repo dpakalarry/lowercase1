@@ -24,18 +24,21 @@ function completeTransaction() {
 	// Get current balance and update with transaction amount
 	fb.database().ref().once('value').then(snapshot => {
 		let entireDbAsJson = snapshot.val();
+		let newBalance = entireDbAsJson['Bank Accounts'][Number(accountNum)].Balance;
+		let totalBalance = Number(newBalance);
+		console.log(type, 'w', type.trim()=='w')
+		type.trim() == 'w' ? totalBalance -= Number(amount) : totalBalance += Number(amount);
 
-		let newBalance = entireDbAsJson['Bank Accounts'][accountNum]['Balance'];
-		type === 'w' ? newBalance -= amount : newBalance += amount;
-
-		fb.database().ref(`Database/${ accountNum }/Balance`).set(newBalance);
+		fb.database().ref(`Bank Accounts/${ Number(accountNum) }/Balance`).set(totalBalance);
 
 
 		return null;
 	});
 
 	// Remove transaction from db
-	fb.database().ref(`Transactions/${ transactionId }`).set(null);
+	fb.database().ref(`Transactions/${transactionId}`).set(null);
+	
+	//self.close()
 }
 
 
