@@ -1,4 +1,8 @@
-
+let name;
+let type;
+let accountNum;
+let amount;
+let transactionId;
 
 function completeTransaction() {
 	var config = {
@@ -16,4 +20,20 @@ function completeTransaction() {
 		.ref())
 	//TODO: Remove transaction from db and update balance in db
 
+	// Get current balance and update with transaction amount
+	fb.database().ref().once('value').then(snapshot => {
+		let entireDbAsJson = snapshot.val();
+		let dbObj = JSON.parse(entireDbAsJson);
+
+		let newBalance = dbObj['Bank Accounts'][accountNum]['Balance'];
+		type === 'w' ? newBalance -= amount : newBalance += amount;
+
+		fb.database().ref(`Database/${ accountNum }/Balance`).set(newBalance);
+
+
+		return null;
+	});
+
+	// Remove transaction from db
+	fb.database().ref(`Transactions/${ transactionId }`).set(null);
 }
