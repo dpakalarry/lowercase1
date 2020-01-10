@@ -14,5 +14,6 @@ function completeTransaction() {
 	console.log(fb.database()
 		// Get entire Db contents
 		.ref())
+	//TODO: Remove transaction from db and update balance in db
 
 }

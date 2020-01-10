@@ -9,17 +9,16 @@
 	<title>Confirm transaction</title>
 </head>
 <body>
-<!--
-<div>
-<h3>Name </h3><h4> </h4> 
-<div><h3>Transaction type </h3><h4> </h4></div>
-<div><h3>Amount </h3><h4> </h4></div>
-<div><h3>Account number </h3><h4> </h4></div>-->
+	<div class="jumbotron" style="position: absolute; top:30%; left:30%; width:40%; height:40%; text-align: center; ">
+		<div class="row"><h3>Name:	</h3> <h4 id="NameHead"> TEST</h4>  </div>
+		<div class="row"><h3>Transaction type: </h3><h4> </h4></div>
+		<div class="row"><h3>Amount: </h3><h4> </h4></div>
+		<div class="row"><h3>Account number: </h3><h4> </h4></div>
+		<a class="btn btn-primary btn-lg" href='#' onclick="completeTransaction()" role="button">Accept</a>
+		<a class="btn btn-danger btn-lg" href='#' onclick="self.close()" role="button">Deny</a>
 
+	</div>
 
-<button type="button"
-        onclick= completeTransaction>Yes</button>
-<input type="button" value="No" onclick="self.close()">
 
 
 <script src = index.js> </script>
