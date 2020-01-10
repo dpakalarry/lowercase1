@@ -54,18 +54,18 @@ class Transaction:
 print(db.child("Bank Accounts").get().val())
 db.child("Bank Accounts").child("11292906").update({"Balance": 350})
 
-trans1 = Transaction("11292906", 400, "withdraw", "John Doe")
+trans1 = Transaction("11292906", 400, "withdraw")
 print(trans1.verify())
 
 print()
 # this is an invalid test case
-trans2 = Transaction("999999999", 400, "withdraw", "Luke Skywalker")
+trans2 = Transaction("999999999", 400, "withdraw")
 print(trans2.verify())
 # if block here: user clicks y/n on gui, if y, execute, else, print thank ya on the gui
 
 print()
 
-trans3 = Transaction("11292906", 400, "withdraw", "Mortiest Morty")
+trans3 = Transaction("11292906", 5000, "deposit")
 print(trans3.verify())
 
 print()
