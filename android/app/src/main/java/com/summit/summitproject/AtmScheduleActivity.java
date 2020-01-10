@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -33,6 +34,7 @@ public class AtmScheduleActivity extends AppCompatActivity {
     ImageView qrCode;
     RadioGroup depoWithButtons;
     EditText amountField;
+    TextView currBalance;
 
     /**
      * Used to persist user credentials if "Remember Me" is checked.
@@ -52,6 +54,7 @@ public class AtmScheduleActivity extends AppCompatActivity {
         qrCode=findViewById(R.id.qr_image);
         depoWithButtons = findViewById(R.id.depositOrWithdraw);
         amountField = findViewById(R.id.atm_amount);
+        currBalance = findViewById(R.id.balance_amount);
 
         amountField.setHint("00.00");
 
@@ -61,6 +64,7 @@ public class AtmScheduleActivity extends AppCompatActivity {
         spinner.setAdapter(adapter);
 
         setupDepositListener();
+        displayBalance();
 
         generate_QRCode.setOnClickListener(new View.OnClickListener() {
 
@@ -90,6 +94,42 @@ public class AtmScheduleActivity extends AppCompatActivity {
                 intent.putExtra("TransactionID", transactionID);
                 startActivity(intent);
             }
+        });
+    }
+
+    private void displayBalance() {
+        // Create QR Code and send to database
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        sharedPreferences = getSharedPreferences("prefs", MODE_PRIVATE);
+        String username = sharedPreferences.getString(PREF_USERNAME, "");
+
+        DatabaseReference user = database.getReference("Usernames").child(username);
+
+        user.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String account = dataSnapshot.getValue().toString().substring(9, 17);
+
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference bankAccounts = database.getReference("Bank Accounts");
+                DatabaseReference balance = bankAccounts.child(account).child("Balance");
+
+                balance.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        String currentBalance = dataSnapshot.getValue().toString();
+
+                        currBalance.setText("$" + currentBalance);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {}
+                });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
         });
     }
 
