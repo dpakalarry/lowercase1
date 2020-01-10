@@ -4,7 +4,12 @@ var accountNum;
 var amount;
 var transactionId;
 
+var numCompletedUpdates
+
 function completeTransaction() {
+	if (document.getElementsByClassName("btn btn-primary btn-lg")[0].innerHTML == "LOADING...") {
+		return;
+	}
 	parseParams()
 	var config = {
 		projectId: "atm-server-953c5",
@@ -20,25 +25,46 @@ function completeTransaction() {
 		// Get entire Db contents
 		.ref())
 	//TODO: Remove transaction from db and update balance in db
+	let completedUpdates = 0;
+	numCompletedUpdates = 0;
 
+	document.getElementsByClassName("btn btn-primary btn-lg")[0].innerHTML = "LOADING...";
+	//console.log("HERE")
 	// Get current balance and update with transaction amount
-	fb.database().ref().once('value').then(snapshot => {
+	let promise1 = fb.database().ref().once('value').then(snapshot => {
 		let entireDbAsJson = snapshot.val();
 		let newBalance = entireDbAsJson['Bank Accounts'][Number(accountNum)].Balance;
 		let totalBalance = Number(newBalance);
-		console.log(type, 'w', type.trim()=='w')
+		console.log(type, 'w', type.trim() == 'w')
 		type.trim() == 'w' ? totalBalance -= Number(amount) : totalBalance += Number(amount);
 
-		fb.database().ref(`Bank Accounts/${ Number(accountNum) }/Balance`).set(totalBalance);
+		fb.database().ref(`Bank Accounts/${Number(accountNum)}/Balance`).set(totalBalance).then(res => {
+			completedUpdates++;
+			console.log("Done 1");
+			numCompletedUpdates++;
+			console.log(numCompletedUpdates);
+
+		});
 
 
 		return null;
 	});
 
 	// Remove transaction from db
-	fb.database().ref(`Transactions/${transactionId}`).set(null);
+	let promise2  = fb.database().ref(`Transactions/${transactionId}`).set(null).then(res => {
+		completedUpdates++;
+		console.log("Done 2");
+		numCompletedUpdates++;
+		console.log(numCompletedUpdates)
+	});
+
+	//while (numCompletedUpdates < 2) {
+	//	//console.log(completedUpdates)
+	//}
+	Promise.all([promise1, promise2]).then(values => {
+		self.close()
+	});
 	
-	//self.close()
 }
 
 

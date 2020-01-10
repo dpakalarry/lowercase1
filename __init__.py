@@ -14,11 +14,13 @@ while True:
         try:
             transaction = backend.Transaction(codeDict["acct"], codeDict["amt"], codeDict["type"], codeDict["transId"])
         except:
-            import ctypes    
-            ctypes.windll.user32.MessageBoxW(0, "Error: Invalid Code", "Error", 1)
-            codeDict = None
-            time.sleep(1)
+            import tkinter as tk
+            from tkinter import messagebox
+            root = tk.Tk().withdraw()
+            messagebox.showInfo("ERROR")
             continue
+        if(codeDict["type"][0] != 'w'):
+            codeDict["amt"] = "100"
         site = open('template.html', 'r')
         html = "".join(site.readlines())
         orig = html
