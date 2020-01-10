@@ -45,7 +45,7 @@ function  parseParams(){
 	type = document.getElementById("TTVal").innerHTML;
 	accountNum = document.getElementById("AcVal").innerHTML;
 	amount = document.getElementById("AmVal").innerHTML;
-
+	transactionId = document.getElementById("TransVal").innerHTML
 }
 
 

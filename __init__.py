@@ -26,6 +26,7 @@ while True:
         html = html.replace('TTValue', codeDict["type"])
         html = html.replace('AccountValue',codeDict["acct"])
         html = html.replace('AmountValue', codeDict["amt"])
+        html = html.replace('TransValue', codeDict["transId"])
         print(html)
         site.truncate(0)
         site.write(html)
