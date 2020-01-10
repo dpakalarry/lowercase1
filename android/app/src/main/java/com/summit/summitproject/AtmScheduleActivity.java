@@ -3,7 +3,6 @@ package com.summit.summitproject;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -29,6 +28,7 @@ import com.journeyapps.barcodescanner.BarcodeEncoder;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -104,7 +104,7 @@ public class AtmScheduleActivity extends AppCompatActivity {
                         try {
                             json.put("acct", account);
                             json.put("transId", transactionID);
-                            json.put("amnt", numAmount);
+                            json.put("amt", numAmount);
                             json.put("type", dOrW);
 
                             TimeZone tz = TimeZone.getTimeZone("UTC");
@@ -113,6 +113,27 @@ public class AtmScheduleActivity extends AppCompatActivity {
                             String nowAsISO = date.format(new Date());
 
                             json.put("time", nowAsISO);
+
+                            DatabaseReference transactions = database.getReference("Transactions");
+
+                            class Transac implements Serializable {
+                                public String account;
+                                public String type;
+                                public String amt;
+                                public String timestamp;
+                                public Date time;
+
+                                Transac() {}
+
+                                Transac(String acct, String ty, String a, String tm) {
+                                    account = acct;
+                                    type = ty;
+                                    amt = a;
+                                    timestamp = tm;
+                                }
+                            }
+
+                            transactions.child(transactionID).setValue(new Transac(account, dOrW, numAmount, nowAsISO));
 
                             String text=json.toString();
                             MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
