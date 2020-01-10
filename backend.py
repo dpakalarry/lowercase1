@@ -51,7 +51,7 @@ class Transaction:
         print("Final balance:", self.balance)
     
 # Test cases  
-print(db.child("Bank Accounts").get().val())
+""" print(db.child("Bank Accounts").get().val())
 db.child("Bank Accounts").child("11292906").update({"Balance": 350})
 
 trans1 = Transaction("11292906", 400, "withdraw", "John Doe")
@@ -71,4 +71,4 @@ print(trans3.verify())
 print()
 
 print("Final:",db.child("Bank Accounts").get().val())
-# Order: verify, then execute.
+# Order: verify, then execute. """
