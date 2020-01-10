@@ -1,10 +1,11 @@
-let name;
-let type;
-let accountNum;
-let amount;
-let transactionId;
+var name;
+var type;
+var accountNum;
+var amount;
+var transactionId;
 
 function completeTransaction() {
+	parseParams()
 	var config = {
 		projectId: "atm-server-953c5",
 		//messagingSenderId: "678522738824"
@@ -38,17 +39,13 @@ function completeTransaction() {
 	fb.database().ref(`Transactions/${ transactionId }`).set(null);
 }
 
-var nameVal;
-var typeVal;
-var actVal;
-var amtVal;
 
 function  parseParams(){
 
-nameVal = document.getElementById("NamVal").innerHTML;
-typeVal = document.getElementById("TTVal").innerHTML;
-actVal = document.getElementById("AcVal").innerHTML;
-amtVal = document.getElementById("AmVal").innerHTML;
+	name = document.getElementById("NamVal").innerHTML;
+	type = document.getElementById("TTVal").innerHTML;
+	accountNum = document.getElementById("AcVal").innerHTML;
+	amount = document.getElementById("AmVal").innerHTML;
 
 }
 
