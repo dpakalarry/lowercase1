@@ -1,6 +1,7 @@
 import qr
 import gui
 import json
+import backend
 
 stream = qr.streamStart()
 codeDict = None
@@ -12,10 +13,12 @@ while codeDict == None:
 qr.quitStream(stream)
 qr.cv2.destroyAllWindows()
 if codeDict:
-    page = gui.confirmPage(codeDict["name"], codeDict["type"], codeDict["amount"], codeDict["account"])
+    transaction = backend.Transaction(codeDict["account"], codeDict["amount"], codeDict["type"])
     m = gui.Tk()
-    page.genPage(m)
+    page = gui.confirmPage(transaction.correctName, codeDict["type"], codeDict["amount"], codeDict["account"])
+    page.genPage(m, transaction.execute)
     m.mainloop()
 else:
-	messagebox.showerror("ERROR", "ERROR: {}".format("Exited"))
+    from tkinter import messagebox
+    messagebox.showerror("ERROR", "ERROR: {}".format("Exited"))
 

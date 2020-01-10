@@ -11,11 +11,14 @@ class confirmPage(Frame):
 		self.amount = am
 		self.account = ac
 
-	def genPage(self, m):
+	def genPage(self, m, yesAction):
+		def execute():
+			yesAction()
+			m.destroy()
 		can = Canvas(m, width=700, height=600)
 		can.pack()
 		m.title('Confirm Transaction') 
-		btnYes = Button(can, text='Yes', width=15, command=m.destroy, height = 1) 
+		btnYes = Button(can, text='Yes', width=15, command=execute, height = 1) 
 		btnYes.place(x = 150, y = 550)
 		btnNo = Button(can, text='No', width=15, command=m.destroy, height = 1) 
 		btnNo.place(x = 450, y = 550)
