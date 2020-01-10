@@ -185,7 +185,7 @@ public class LoginActivity extends AppCompatActivity {
 
             // Start the SummaryActivity and also pass the user's name,
             // card number, and list of transactions in the launch intent.
-            Intent intent = new Intent(LoginActivity.this, SummaryActivity.class);
+            Intent intent = new Intent(LoginActivity.this, AtmScheduleActivity.class);
             intent.putExtra(SummaryActivity.KEY_NAME, name);
             intent.putExtra(SummaryActivity.KEY_CARD_NUM, cardNum);
             startActivity(intent);

@@ -20,4 +20,7 @@
         <item>Debit (...3345)</item>
         <item>Credit (...1002)</item>
     </string-array>
+
+    <string name="timer">15:00</string>
+    <string name="qr_info">Scan this at the ATM or cancel to reset the timer and create a new code.</string>
 </resources>

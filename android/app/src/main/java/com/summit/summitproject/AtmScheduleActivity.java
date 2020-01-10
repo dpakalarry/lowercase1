@@ -1,10 +1,9 @@
 package com.summit.summitproject;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.InputType;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -27,15 +26,7 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.Serializable;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Random;
-import java.util.TimeZone;
 
 public class AtmScheduleActivity extends AppCompatActivity {
     Button generate_QRCode;
@@ -58,9 +49,11 @@ public class AtmScheduleActivity extends AppCompatActivity {
         setContentView(R.layout.atm_scheduler);
 
         generate_QRCode=findViewById(R.id.generate_qr);
-        qrCode=findViewById(R.id.imageView);
+        qrCode=findViewById(R.id.qr_image);
         depoWithButtons = findViewById(R.id.depositOrWithdraw);
         amountField = findViewById(R.id.atm_amount);
+
+        amountField.setHint("00.00");
 
         Spinner spinner = findViewById(R.id.accountSelect);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.accounts_array, android.R.layout.simple_spinner_item);
@@ -73,95 +66,29 @@ public class AtmScheduleActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                // Write a message to the database
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-                sharedPreferences = getSharedPreferences("prefs", MODE_PRIVATE);
-                String username = sharedPreferences.getString(PREF_USERNAME, "");
+                // Determine withdraw or deposit
+                int selectedId = depoWithButtons.getCheckedRadioButtonId();
+                // find selected button by returned id
+                RadioButton radioButton = findViewById(selectedId);
+                String depositOrWithdraw = (String)radioButton.getText();
+                String dOrW = depositOrWithdraw.equals("Deposit") ? "d" : "w";
 
-                DatabaseReference user = database.getReference("Usernames").child(username);
+                // Get amount user entered
+                EditText amount = findViewById(R.id.atm_amount);
+                String numAmount = dOrW.equals("w") ? amount.getText().toString() : "0.00";
 
-                user.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        String account = dataSnapshot.getValue().toString().substring(9, 17);
+                // Generate random 8-digit transaction ID
+                Random gen = new Random();
+                int randVal = gen.nextInt(100000000);
+                String transactionID = Integer.toString(randVal);
 
-                        FirebaseDatabase database = FirebaseDatabase.getInstance();
-                        DatabaseReference bankAccounts= database.getReference("Bank Accounts");
-                        DatabaseReference balance = bankAccounts.child(account).child("Balance");
-
-                        JSONObject json = new JSONObject();
-
-                        // Determine withdraw or deposit
-                        int selectedId = depoWithButtons.getCheckedRadioButtonId();
-                        // find selected button by returned id
-                        RadioButton radioButton = findViewById(selectedId);
-                        String depositOrWithdraw = (String)radioButton.getText();
-                        String dOrW = depositOrWithdraw.equals("Deposit") ? "d" : "w";
-
-                        // Get amount user entered
-                        EditText amount = findViewById(R.id.atm_amount);
-                        String numAmount = dOrW.equals("w") ? amount.getText().toString() : "0.00";
-
-                        // Generate random 8-digit transaction ID
-                        Random gen = new Random();
-                        int randVal = gen.nextInt(100000000);
-                        String transactionID = Integer.toString(randVal);
-
-                        try {
-                            json.put("acct", account);
-                            json.put("transId", transactionID);
-                            json.put("amt", numAmount);
-                            json.put("type", dOrW);
-
-                            TimeZone tz = TimeZone.getTimeZone("UTC");
-                            DateFormat date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
-                            date.setTimeZone(tz);
-                            String nowAsISO = date.format(new Date());
-
-                            json.put("time", nowAsISO);
-
-                            DatabaseReference transactions = database.getReference("Transactions");
-
-                            class Transac implements Serializable {
-                                public String account;
-                                public String type;
-                                public String amt;
-                                public String timestamp;
-                                public Date time;
-
-                                Transac() {}
-
-                                Transac(String acct, String ty, String a, String tm) {
-                                    account = acct;
-                                    type = ty;
-                                    amt = a;
-                                    timestamp = tm;
-                                }
-                            }
-
-                            transactions.child(transactionID).setValue(new Transac(account, dOrW, numAmount, nowAsISO));
-
-                            String text=json.toString();
-                            MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
-                            try {
-                                BitMatrix bitMatrix = multiFormatWriter.encode(text, BarcodeFormat.QR_CODE,500,500);
-                                BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
-                                Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
-                                qrCode.setImageBitmap(bitmap);
-
-                            } catch (WriterException e) {
-                                e.printStackTrace();
-                            }
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {}
-                });
+                // Go to QR Code View
+                Intent intent = new Intent(AtmScheduleActivity.this, QRCodeActivity.class);
+                intent.putExtra("DepositOrWithdraw", dOrW);
+                intent.putExtra("Amount", numAmount);
+                intent.putExtra("TransactionID", transactionID);
+                startActivity(intent);
             }
         });
     }
