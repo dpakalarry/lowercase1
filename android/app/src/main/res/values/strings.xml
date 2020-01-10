@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Fast Money</string>
+    <string name="welcome">Welcome!</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="sign_in">Sign In</string>
+    <string name="remember_me">Remember Me</string>
+    <string name="summary_title">Hello, %1$s</string>
+    <string name="summary_subtitle">Use the options below to schedule transactions and view any pending visits:</string>
+
+    <string name="atm_schedule_button">Schedule ATM Visit</string>
+    <string name="submit">Submit</string>
+    <string name="confirm_atm_schedule">Confirm and Generate</string>
+    <string name="welcome_atm_schedule">Set up your ATM transaction below.</string>
+
+    <string name="deposit">Deposit</string>
+    <string name="withdrawal">Withdraw</string>
+
+    <string-array name="accounts_array">
+        <item>Debit (...3345)</item>
+        <item>Credit (...1002)</item>
+    </string-array>
+</resources>
