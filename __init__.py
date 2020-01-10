@@ -16,7 +16,7 @@ if codeDict:
     transaction = backend.Transaction(codeDict["account"], codeDict["amount"], codeDict["type"])
     m = gui.Tk()
     page = gui.confirmPage(transaction.correctName, codeDict["type"], codeDict["amount"], codeDict["account"])
-    page.genPage(m, transaction.execute())
+    page.genPage(m, transaction.execute)
     m.mainloop()
 else:
     from tkinter import messagebox

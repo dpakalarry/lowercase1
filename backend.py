@@ -18,7 +18,6 @@ class Transaction:
         self.id = id
         self.amt = amt
         self.action = action
-        
         self.balance = db.child("Bank Accounts").child(id).child("Balance").get().val()
         self.correctName = db.child("Bank Accounts").child(self.id).child("Name").get().val()
         
@@ -32,6 +31,11 @@ class Transaction:
         
 
     def execute(self):
+        
+        try:
+            self.amt = float(self.amt)
+        except: 
+            return "Invalid deposit type. Your deposit must be a number"
         if self.action=="deposit":
             self.deposit(self.amt)
         elif self.action=="withdraw":
@@ -47,7 +51,7 @@ class Transaction:
         if (self.balance > self.amt):
             self.balance = self.balance - self.amt
         else:
-            return "You don't have enough money in your account to withdraw " + str(self.amt);
+            return "You don't have enough money in your account to withdraw " + str(self.amt)
         print("Final balance:", self.balance)
     
 # Test cases  
