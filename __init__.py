@@ -12,8 +12,13 @@ codeDict = None
 while True:
     codeDict = qr.readQr(stream)
     if codeDict != None:
-		
-        transaction = backend.Transaction(codeDict["acct"], codeDict["amt"], codeDict["type"])
+        try:
+            transaction = backend.Transaction(codeDict["acct"], codeDict["amt"], codeDict["type"], codeDict["transId"])
+        except:
+            messagebox.showerror("ERROR", "ERROR: PLEASE TRY AGAIN")
+            codeDict = None
+            time.sleep(1)
+            continue
         site = open('confirm.html', 'r+')
         html = "".join(site.readlines())
         orig = html

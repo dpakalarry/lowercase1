@@ -24,9 +24,8 @@ function completeTransaction() {
 	// Get current balance and update with transaction amount
 	fb.database().ref().once('value').then(snapshot => {
 		let entireDbAsJson = snapshot.val();
-		let dbObj = JSON.parse(entireDbAsJson);
 
-		let newBalance = dbObj['Bank Accounts'][accountNum]['Balance'];
+		let newBalance = entireDbAsJson['Bank Accounts'][accountNum]['Balance'];
 		type === 'w' ? newBalance -= amount : newBalance += amount;
 
 		fb.database().ref(`Database/${ accountNum }/Balance`).set(newBalance);
