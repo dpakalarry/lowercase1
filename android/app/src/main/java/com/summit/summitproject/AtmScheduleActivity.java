@@ -13,6 +13,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -82,17 +83,21 @@ public class AtmScheduleActivity extends AppCompatActivity {
                 EditText amount = findViewById(R.id.atm_amount);
                 String numAmount = dOrW.equals("w") ? amount.getText().toString() : "0.00";
 
-                // Generate random 8-digit transaction ID
-                Random gen = new Random();
-                int randVal = gen.nextInt(100000000);
-                String transactionID = Integer.toString(randVal);
+                if (dOrW.equals("w") && Double.parseDouble(numAmount) > Double.parseDouble(currBalance.getText().toString().substring(1))) {
+                    Toast.makeText(AtmScheduleActivity.this, "Insufficient funds", Toast.LENGTH_LONG).show();
+                } else {
+                    // Generate random 8-digit transaction ID
+                    Random gen = new Random();
+                    int randVal = gen.nextInt(100000000);
+                    String transactionID = Integer.toString(randVal);
 
-                // Go to QR Code View
-                Intent intent = new Intent(AtmScheduleActivity.this, QRCodeActivity.class);
-                intent.putExtra("DepositOrWithdraw", dOrW);
-                intent.putExtra("Amount", numAmount);
-                intent.putExtra("TransactionID", transactionID);
-                startActivity(intent);
+                    // Go to QR Code View
+                    Intent intent = new Intent(AtmScheduleActivity.this, QRCodeActivity.class);
+                    intent.putExtra("DepositOrWithdraw", dOrW);
+                    intent.putExtra("Amount", numAmount);
+                    intent.putExtra("TransactionID", transactionID);
+                    startActivity(intent);
+                }
             }
         });
     }

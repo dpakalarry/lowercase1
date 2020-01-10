@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -31,6 +32,7 @@ import org.json.JSONObject;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -40,6 +42,10 @@ public class QRCodeActivity extends AppCompatActivity {
     ImageView qr_view;
     Button cancelButton;
     String numAmount, transactionID, dOrW;
+    String username;
+
+    CountDownTimer timerOb;
+    static ArrayList<String> lastIDs = new ArrayList<String>();
 
     private SharedPreferences sharedPreferences;
     private static final String PREF_USERNAME = "USERNAME";
@@ -56,13 +62,15 @@ public class QRCodeActivity extends AppCompatActivity {
         numAmount = getIntent().getStringExtra("Amount");
         transactionID = getIntent().getStringExtra("TransactionID");
 
+        Log.d("Debug, transactionID", transactionID);
+
         setupCancelListener();
 
         // Create QR Code and send to database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
 
         sharedPreferences = getSharedPreferences("prefs", MODE_PRIVATE);
-        String username = sharedPreferences.getString(PREF_USERNAME, "");
+        username = sharedPreferences.getString(PREF_USERNAME, "");
 
         DatabaseReference user = database.getReference("Usernames").child(username);
 
@@ -119,17 +127,6 @@ public class QRCodeActivity extends AppCompatActivity {
                         Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
                         qr_view.setImageBitmap(bitmap);
 
-                        //Listener for transaction
-                        transactions.child(transactionID).addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                scanSuccess();
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) { }
-                        });
-
                     } catch (WriterException e) {
                         e.printStackTrace();
                     }
@@ -143,17 +140,25 @@ public class QRCodeActivity extends AppCompatActivity {
             public void onCancelled(DatabaseError databaseError) {}
         });
 
-        new CountDownTimer(900000, 1000) {
+        final long millisInTimer = 900000;
+        timerOb = new CountDownTimer(millisInTimer, 1000) {
 
             public void onTick(long millisUntilFinished) {
+
+                // Display current time
                 long seconds = millisUntilFinished / 1000;
                 String mins = seconds / 60 > 0 ? "" + seconds / 60 : "0";
                 String secs = seconds % 60 > 9 ? "" + seconds % 60 : "0" + seconds % 60;
                 String time = mins + ":" + secs;
                 countdownTimer.setText(time);
+
+                //Log.d("timer going", "why");
+                if (seconds % 2 == 0)
+                    setupTransactionListener(); // Check for transaction to be complete
             }
 
             public void onFinish() {
+                lastIDs.add(transactionID);
                 Intent intent = new Intent(QRCodeActivity.this, AtmScheduleActivity.class);
                 startActivity(intent);
             }
@@ -165,6 +170,7 @@ public class QRCodeActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
+                lastIDs.add(transactionID);
                 Intent intent = new Intent(QRCodeActivity.this, AtmScheduleActivity.class);
                 startActivity(intent);
             }
@@ -172,9 +178,46 @@ public class QRCodeActivity extends AppCompatActivity {
         });
     }
 
-    private void scanSuccess() {
-        Toast.makeText(QRCodeActivity.this, "Success!", Toast.LENGTH_LONG);
-        Intent intent = new Intent(QRCodeActivity.this, AtmScheduleActivity.class);
-        startActivity(intent);
+    private void setupTransactionListener() {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        DatabaseReference user = database.getReference("Usernames").child(username);
+
+        user.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String account = dataSnapshot.getValue().toString().substring(9, 17);
+
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+                DatabaseReference transactions = database.getReference("Transactions");
+
+                //Listener for transaction
+                transactions.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        String transactions = dataSnapshot.getValue().toString();
+                        //Log.d("ID", transactionID);
+                        if (!lastIDs.contains(transactionID)) {
+                            if (!dataSnapshot.getValue().toString().contains(transactionID)) {
+                                Toast.makeText(QRCodeActivity.this, "Success!", Toast.LENGTH_LONG);
+                                if (timerOb != null) {
+                                    timerOb.cancel();
+                                    timerOb = null;
+                                }
+                                lastIDs.add(transactionID);
+                                Intent intent = new Intent(QRCodeActivity.this, AtmScheduleActivity.class);
+                                startActivity(intent);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) { }
+                });
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
+        });
     }
 }
