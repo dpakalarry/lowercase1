@@ -13,9 +13,9 @@ while codeDict == None:
 qr.quitStream(stream)
 qr.cv2.destroyAllWindows()
 if codeDict:
-    transaction = backend.Transaction(codeDict["account"], codeDict["amount"], codeDict["type"])
+    transaction = backend.Transaction(codeDict["acct"], codeDict["amt"], codeDict["type"])
     m = gui.Tk()
-    page = gui.confirmPage(transaction.correctName, codeDict["type"], codeDict["amount"], codeDict["account"])
+    page = gui.confirmPage(transaction.correctName, codeDict["type"], codeDict["amt"], codeDict["acct"])
     page.genPage(m, transaction.execute)
     m.mainloop()
 else:
