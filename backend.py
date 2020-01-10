@@ -45,11 +45,13 @@ class Transaction:
 
     def deposit(self,amt):
         self.balance = self.balance + self.amt
+        db.child("Bank Accounts").child(self.id).update({"Balance": self.balance})
         print("Final balance:", self.balance)
         
     def withdraw(self,amt):
         if (self.balance > self.amt):
             self.balance = self.balance - self.amt
+            db.child("Bank Accounts").child(self.id).update({"Balance": self.balance})
         else:
             return "You don't have enough money in your account to withdraw " + str(self.amt)
         print("Final balance:", self.balance)
