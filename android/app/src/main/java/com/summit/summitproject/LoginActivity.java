@@ -16,6 +16,11 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.summit.summitproject.prebuilt.login.LoginListener;
 import com.summit.summitproject.prebuilt.login.LoginManager;
 
@@ -98,18 +103,34 @@ public class LoginActivity extends AppCompatActivity {
         signIn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                String inputtedUsername = username.getText().toString();
-                String inputtedPassword = password.getText().toString();
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference users = database.getReference("Usernames");
 
-                // Don't allow user input while logging in & show the progress bar
-                setAllEnabled(false);
-                progress.setVisibility(View.VISIBLE);
+                users.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        String inputtedUsername = username.getText().toString();
+                        String inputtedPassword = password.getText().toString();
 
-                // Instantiate the login manager, passing the username, password, and result listener
-                LoginManager loginManager = new LoginManager(inputtedUsername, inputtedPassword, loginListener);
+                        if (!snapshot.getValue().toString().contains(inputtedUsername)) {
+                            Toast.makeText(LoginActivity.this, "Invalid username.", Toast.LENGTH_LONG).show();
+                            return;
+                        }
 
-                // Kick off the login network call
-                loginManager.execute();
+                        // Don't allow user input while logging in & show the progress bar
+                        setAllEnabled(false);
+                        progress.setVisibility(View.VISIBLE);
+
+                        // Instantiate the login manager, passing the username, password, and result listener
+                        LoginManager loginManager = new LoginManager(inputtedUsername, inputtedPassword, loginListener);
+
+                        // Kick off the login network call
+                        loginManager.execute();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {}
+                });
             }
         });
 
