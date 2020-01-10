@@ -15,8 +15,29 @@
 <div><h3>Transaction type </h3><h4> </h4></div>
 <div><h3>Amount </h3><h4> </h4></div>
 <div><h3>Account number </h3><h4> </h4></div>-->
-<button onclick = "window.open('./start-bash.sh')"> launch </button>
- 
 
+
+<button type="button"
+        onclick= completeTransaction>Yes</button>
+
+
+<button onclick="myFunction()">No</button>
+
+<p id="confirmClose"></p>
+
+<script>
+function myFunction() {
+  var txt;
+  if (confirm("Are you sure")) {
+    window.open('', '_self', ''); window.close();
+  } else {
+	txt="";
+  }
+  document.getElementById("closeCmd").innerHTML = txt;
+}
+</script>
+
+
+<script src = query.js> </script>
 </body>
 </html>
