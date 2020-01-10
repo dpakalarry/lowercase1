@@ -76,14 +76,16 @@ public class AtmScheduleActivity extends AppCompatActivity {
                 int selectedId = depoWithButtons.getCheckedRadioButtonId();
                 // find selected button by returned id
                 RadioButton radioButton = findViewById(selectedId);
-                String depositOrWithdraw = (String)radioButton.getText();
+                String depositOrWithdraw = (String) radioButton.getText();
                 String dOrW = depositOrWithdraw.equals("Deposit") ? "d" : "w";
 
                 // Get amount user entered
                 EditText amount = findViewById(R.id.atm_amount);
                 String numAmount = dOrW.equals("w") ? amount.getText().toString() : "0.00";
 
-                if (dOrW.equals("w") && Double.parseDouble(numAmount) > Double.parseDouble(currBalance.getText().toString().substring(1))) {
+                if (dOrW.equals("w") && numAmount.equals("")) {
+                    Toast.makeText(AtmScheduleActivity.this, "Please input amount", Toast.LENGTH_LONG).show();
+                } else if (dOrW.equals("w") && Double.parseDouble(numAmount) > Double.parseDouble(currBalance.getText().toString().substring(1))) {
                     Toast.makeText(AtmScheduleActivity.this, "Insufficient funds", Toast.LENGTH_LONG).show();
                 } else {
                     // Generate random 8-digit transaction ID
@@ -160,5 +162,10 @@ public class AtmScheduleActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+
     }
 }

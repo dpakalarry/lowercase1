@@ -220,4 +220,9 @@ public class QRCodeActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
     }
+
+    @Override
+    public void onBackPressed() {
+
+    }
 }
