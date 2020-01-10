@@ -119,6 +119,17 @@ public class QRCodeActivity extends AppCompatActivity {
                         Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
                         qr_view.setImageBitmap(bitmap);
 
+                        //Listener for transaction
+                        transactions.child(transactionID).addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                scanSuccess();
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) { }
+                        });
+
                     } catch (WriterException e) {
                         e.printStackTrace();
                     }
@@ -140,18 +151,6 @@ public class QRCodeActivity extends AppCompatActivity {
                 String secs = seconds % 60 > 9 ? "" + seconds % 60 : "0" + seconds % 60;
                 String time = mins + ":" + secs;
                 countdownTimer.setText(time);
-
-                if (millisUntilFinished % 1000 == 0)
-                    //Listener for transaction
-                    transactions.child(transactionID).addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            scanSuccess();
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) { }
-                    });
             }
 
             public void onFinish() {
