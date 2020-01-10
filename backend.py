@@ -14,20 +14,26 @@ firebase = pyrebase.initialize_app(config)
 db = firebase.database()
 
 class Transaction:
-    def __init__(self, id, amt, action):
+    def __init__(self, id, amt, action, transID):
         self.id = id
         self.amt = amt
         self.action = action
         self.balance = db.child("Bank Accounts").child(id).child("Balance").get().val()
         self.correctName = db.child("Bank Accounts").child(self.id).child("Name").get().val()
+        self.transId = transID
         
         print("Initial balance:",self.balance)
-        
+        self.verify()
     def verify(self):
         if self.id in db.child("Bank Accounts").get().val():
-            self.execute()
-        else:
-            return "Invalid ID"
+            if self.transId in db.child("Transactions").get().val():
+                if self.id == db.child("Transactions").child(self.transId).child("account").get().val():
+                    if self.amt == db.child("Transactions").child(self.transId).child("amt").get().val():
+                        if self.action == db.child("Transactions").child(self.transId).child("type").get().val():
+                            return
+                        print(db.child("Transactions").child(self.transId).child("type").get().val())
+        raise ValueError("")
+            #return "Invalid ID"
         
 
     def execute(self):
