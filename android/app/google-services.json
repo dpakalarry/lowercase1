@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "857672971147",
+    "firebase_url": "https://atm-server-953c5.firebaseio.com",
+    "project_id": "atm-server-953c5",
+    "storage_bucket": "atm-server-953c5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:857672971147:android:f8951c151777857d5eb58e",
+        "android_client_info": {
+          "package_name": "com.summit.summitproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "857672971147-pf5j6sijt436b8pv64a3v3fcs8du9ppt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.summit.summitproject",
+            "certificate_hash": "786c85114c27d5e9bd899ba40b8bd2219b29345d"
+          }
+        },
+        {
+          "client_id": "857672971147-ph3qe3ht3ikumtnufikheprgsjs900lr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAuUoeGawa4_yr1Cx1gzsKDbSkKdZ7MSg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "857672971147-ph3qe3ht3ikumtnufikheprgsjs900lr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

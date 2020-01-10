@@ -36,6 +36,8 @@ public class LoginActivity extends AppCompatActivity {
      */
     private static final String PREF_PASSWORD = "PASSWORD";
 
+    private static final String PREF_REMEMBER = "REMEMBER";
+
     /**
      * Used to persist user credentials if "Remember Me" is checked.
      */
@@ -72,9 +74,18 @@ public class LoginActivity extends AppCompatActivity {
 
         // If user credentials were previously stored, pre-fill the username / password
         sharedPreferences = getSharedPreferences("prefs", MODE_PRIVATE);
-        rememberMe.setChecked(sharedPreferences.contains(PREF_USERNAME));
-        username.setText(sharedPreferences.getString(PREF_USERNAME, ""));
-        password.setText(sharedPreferences.getString(PREF_PASSWORD, ""));
+        rememberMe.setChecked(sharedPreferences.contains(PREF_REMEMBER));
+
+        String rememberedUsername = "";
+        String rememberedPassword = "";
+
+        if (rememberMe.isChecked()) {
+            rememberedUsername = sharedPreferences.getString(PREF_USERNAME, "");
+            rememberedPassword = sharedPreferences.getString(PREF_PASSWORD, "");
+        }
+
+        username.setText(rememberedUsername);
+        password.setText(rememberedPassword);
     }
 
     /**
@@ -117,10 +128,17 @@ public class LoginActivity extends AppCompatActivity {
     /**
      * Save the username nad password to local storage.
      */
-    private void saveUserCredentials() {
+    private void saveUserCredentials(boolean remember) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(PREF_USERNAME, username.getText().toString());
         editor.putString(PREF_PASSWORD, password.getText().toString());
+
+        if (remember)
+            editor.putString(PREF_REMEMBER, "on");
+        else
+            editor.remove(PREF_REMEMBER).apply();
+
+
         editor.apply();
     }
 
@@ -130,7 +148,7 @@ public class LoginActivity extends AppCompatActivity {
     private void clearUserCredentials() {
         username.setText("");
         password.setText("");
-        sharedPreferences.edit().clear().apply();
+        //sharedPreferences.edit().clear().apply();
     }
 
     /**
@@ -163,9 +181,7 @@ public class LoginActivity extends AppCompatActivity {
             progress.setVisibility(View.INVISIBLE);
 
             // Store user credentials in private storage if "Remember Me" was checked
-            if (rememberMe.isChecked()) {
-                saveUserCredentials();
-            }
+            saveUserCredentials(rememberMe.isChecked());
 
             // Start the SummaryActivity and also pass the user's name,
             // card number, and list of transactions in the launch intent.
