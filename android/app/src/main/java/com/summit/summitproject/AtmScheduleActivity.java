@@ -3,6 +3,7 @@ package com.summit.summitproject;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -38,6 +39,8 @@ import java.util.TimeZone;
 public class AtmScheduleActivity extends AppCompatActivity {
     Button generate_QRCode;
     ImageView qrCode;
+    RadioGroup depoWithButtons;
+    EditText amountField;
 
     /**
      * Used to persist user credentials if "Remember Me" is checked.
@@ -55,11 +58,15 @@ public class AtmScheduleActivity extends AppCompatActivity {
 
         generate_QRCode=findViewById(R.id.generate_qr);
         qrCode=findViewById(R.id.imageView);
+        depoWithButtons = findViewById(R.id.depositOrWithdraw);
+        amountField = findViewById(R.id.atm_amount);
 
         Spinner spinner = findViewById(R.id.accountSelect);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.accounts_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+
+        setupDepositListener();
 
         generate_QRCode.setOnClickListener(new View.OnClickListener() {
 
@@ -84,17 +91,16 @@ public class AtmScheduleActivity extends AppCompatActivity {
 
                         JSONObject json = new JSONObject();
 
-                        // Get amount user entered
-                        EditText amount = findViewById(R.id.atm_amount);
-                        String numAmount = amount.getText().toString();
-
                         // Determine withdraw or deposit
-                        RadioGroup radioGroup = findViewById(R.id.depositOrWithdraw);
-                        int selectedId = radioGroup.getCheckedRadioButtonId();
+                        int selectedId = depoWithButtons.getCheckedRadioButtonId();
                         // find selected button by returned id
                         RadioButton radioButton = findViewById(selectedId);
                         String depositOrWithdraw = (String)radioButton.getText();
-                        String dOrW = depositOrWithdraw == "Deposit" ? "d" : "w";
+                        String dOrW = depositOrWithdraw.equals("Deposit") ? "d" : "w";
+
+                        // Get amount user entered
+                        EditText amount = findViewById(R.id.atm_amount);
+                        String numAmount = dOrW.equals("w") ? amount.getText().toString() : "0.00";
 
                         // Generate random 8-digit transaction ID
                         Random gen = new Random();
@@ -134,6 +140,29 @@ public class AtmScheduleActivity extends AppCompatActivity {
                     @Override
                     public void onCancelled(DatabaseError databaseError) {}
                 });
+            }
+        });
+    }
+
+    private void setupDepositListener() {
+        depoWithButtons.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
+        {
+            public void onCheckedChanged(RadioGroup group, int checkedId)
+            {
+                RadioButton checkedRadioButton = group.findViewById(checkedId);
+
+                String depositOrWithdraw = checkedRadioButton.getText().toString();
+                if (depositOrWithdraw.equals("Deposit")) {
+                    // Make amount field void
+                    amountField.setEnabled(false);
+                    amountField.setInputType(InputType.TYPE_NULL);
+                    amountField.setHint("N/A");
+                } else {
+                    amountField.setEnabled(true);
+                    amountField.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                    amountField.setHint("00.00");
+                }
+
             }
         });
     }
