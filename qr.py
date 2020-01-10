@@ -7,6 +7,7 @@ import time
 import cv2
 
 def convertFromJson(data):
+	
 	try:
 		dataDict = json.loads(data)
 	except ValueError as e:
