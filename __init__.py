@@ -2,23 +2,32 @@ import qr
 import gui
 import json
 import backend
+import webbrowser
+from tkinter import messagebox
+import os 
 
 stream = qr.streamStart()
 codeDict = None
-while codeDict == None:
+path = dir_path = os.getcwd()
+while True:
     codeDict = qr.readQr(stream)
     if codeDict != None:
-        print("returning", codeDict)
-        break
+        transaction = backend.Transaction(codeDict["acct"], codeDict["amt"], codeDict["type"])
+        webbrowser.open_new_tab(path+"/confirm.html"+"?act={}&amt={}&type={}&name={}".format(
+            codeDict["acct"], codeDict["amt"], codeDict["type"], transaction.correctName
+        ))
+        codeDict = None
+            
+            
 qr.quitStream(stream)
 qr.cv2.destroyAllWindows()
 if codeDict:
-    transaction = backend.Transaction(codeDict["account"], codeDict["amount"], codeDict["type"])
+    
     m = gui.Tk()
     page = gui.confirmPage(transaction.correctName, codeDict["type"], codeDict["amount"], codeDict["account"])
     page.genPage(m, transaction.execute)
     m.mainloop()
 else:
-    from tkinter import messagebox
+    
     messagebox.showerror("ERROR", "ERROR: {}".format("Exited"))
 
