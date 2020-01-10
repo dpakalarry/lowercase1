@@ -5,22 +5,14 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.Serializable;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -32,6 +24,15 @@ import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 public class QRCodeActivity extends AppCompatActivity {
 
@@ -139,6 +140,18 @@ public class QRCodeActivity extends AppCompatActivity {
                 String secs = seconds % 60 > 9 ? "" + seconds % 60 : "0" + seconds % 60;
                 String time = mins + ":" + secs;
                 countdownTimer.setText(time);
+
+                if (millisUntilFinished % 1000 == 0)
+                    //Listener for transaction
+                    transactions.child(transactionID).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            scanSuccess();
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) { }
+                    });
             }
 
             public void onFinish() {
@@ -158,5 +171,11 @@ public class QRCodeActivity extends AppCompatActivity {
             }
 
         });
+    }
+
+    private void scanSuccess() {
+        Toast.makeText(QRCodeActivity.this, "Success!", Toast.LENGTH_LONG);
+        Intent intent = new Intent(QRCodeActivity.this, AtmScheduleActivity.class);
+        startActivity(intent);
     }
 }
