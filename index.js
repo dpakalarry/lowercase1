@@ -37,3 +37,19 @@ function completeTransaction() {
 	// Remove transaction from db
 	fb.database().ref(`Transactions/${ transactionId }`).set(null);
 }
+
+var nameVal;
+var typeVal;
+var actVal;
+var amtVal;
+
+function  parseParams(){
+
+nameVal = document.getElementById("NamVal").innerHTML;
+typeVal = document.getElementById("TTVal").innerHTML;
+actVal = document.getElementById("AcVal").innerHTML;
+amtVal = document.getElementById("AmVal").innerHTML;
+
+}
+
+
