@@ -25,6 +25,7 @@
         </activity>
         <activity android:name=".SummaryActivity" />
         <activity android:name=".AtmScheduleActivity" />
+        <activity android:name=".QRCodeActivity" />
     </application>
 
 </manifest>
